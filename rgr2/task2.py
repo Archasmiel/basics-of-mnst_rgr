@@ -1,12 +1,9 @@
+from info import task2
 from openpyxl import Workbook
 
-
-E = 270e9
-
-L = 600e-6
-W = 4e-6
-H = 0.7e-6
-F = 0.6e-6
+var = open('../variant.txt', 'r').readline().strip()
+material, L, W, H, F = task2.get(var)
+E = material.get('E')
 
 
 def get_y(form, ampl):
@@ -18,20 +15,20 @@ def get_y(form, ampl):
     if form != 'w':
         res /= W
     if form != 'h':
-        res /= H/H/H
+        res /= H*H*H
 
     return res * get(form, ampl)
 
 
-def get(form, ampl):
+def get(form, amp):
     if form == 'F':
-        return F*ampl
+        return F * amp
     if form == 'l':
-        return (L*ampl)*(L*ampl)*(L*ampl)
+        return (L * amp) * (L * amp) * (L * amp)
     if form == 'h':
-        return 1/(H*ampl)/(H*ampl)/(H*ampl)
+        return 1 / (H * amp) / (H * amp) / (H * amp)
     if form == 'w':
-        return 1/(W*ampl)
+        return 1 / (W * amp)
 
 
 def make_arr(form):
@@ -45,6 +42,7 @@ def make_arr(form):
 modes = ['F', 'l', 'h', 'w']
 
 wb = Workbook()
+del wb['Sheet']
 
 for mode in modes:
     ws = wb.create_sheet(mode)
@@ -53,5 +51,4 @@ for mode in modes:
         ws['A'+str(j+1)] = arr[0][j]
         ws['B'+str(j+1)] = arr[1][j]
 
-wb.save('gen/rgr2.xlsx')
-
+wb.save('rgr2.xlsx')
